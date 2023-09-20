@@ -31,11 +31,15 @@ int Vehicle::scanForward(int i)
 }
 int Vehicle::leftAxis(int pos)
 {
-  for(int  i = 0; i < 9; i++)
+  //if ultra-sonic sensor records zero, obstacles are so far away they've become unrecorded.
+  //in terms of navigation, this is ideal, thus system should stop looking
+  for(int  i = 0; i < 9 && distancePosition[pos] > 0; i++)
   {
     servo->write((i*10));
     scanForward(i);
-    if(distancePosition[i] > distancePosition[pos])
+    if(distancePosition[i] == 0)
+      pos = i;
+    else if(distancePosition[i] > distancePosition[pos])
       pos = i;
     delay(delayTime);
   }
@@ -43,11 +47,15 @@ int Vehicle::leftAxis(int pos)
 }
 int Vehicle::rightAxis(int pos)
 {
-  for(int  i = 10; i < 18; i++)
+  //if ultra-sonic sensor records zero, obstacles are so far away they've become unrecorded.
+  //in terms of navigation, this is ideal, thus system should stop looking
+  for(int  i = 10; i < 18 && distancePosition[pos] > 0; i++)
   {
     servo->write((i*10));
     scanForward(i);
-    if(distancePosition[i] > distancePosition[pos])
+    if(distancePosition[i] == 0)
+      pos = i;
+    else if(distancePosition[i] > distancePosition[pos])
       pos = i;
     delay(delayTime);
   }
